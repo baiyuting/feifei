@@ -21,13 +21,29 @@ import java.util.List;
  * final String URL = "jdbc:oracle:thin:@localhost:1521:mldn";
  * final String USER = "scott";
  * final String PASSWORD = "tiger";
+ * <p>
+ * <p>
+ * DBUtil 单例设计：
+ * <p>
+ * 构造方法 private ：
+ * private DBUtil(){}
+ * 这样的话就不能使用 new DBUtil() 来实例化
+ * <p>
+ * 同时提供
+ * public DBUtil getInstance() 方法，用户只能通过这个方法获得实例
+ * <p>
+ * 在 getInstance() 方法里面返回已经 生成好的 INSTANCE 实例，这个 INSTANCE 是 常量
  */
 public class DBUtil {
 
-    private final static DBUtil util = new DBUtil();
+    private final static DBUtil INSTANCE = new DBUtil();//这个 通过 final 和 static 声明 为常量
+
+    // ThreadLocal 类
+    private static ThreadLocal<Connection> connectionThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<PreparedStatement> preparedStatementThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<ResultSet> resultSetThreadLocal = new ThreadLocal<>();
 
     private DBUtil() {
-
     }
 
     public static void main(String[] args) {
@@ -35,12 +51,8 @@ public class DBUtil {
     }
 
     public static DBUtil getInstance() {
-        return util;
+        return INSTANCE;
     }
-
-    private Connection conn;
-    private PreparedStatement ps;
-    private ResultSet rs;
 
     private String className = "com.mysql.jdbc.Driver";
     private String url = "jdbc:mysql://localhost:3306/feifei";
@@ -48,9 +60,12 @@ public class DBUtil {
     private String pwd = "1234";
 
     public Connection getConn() {
+        Connection conn = connectionThreadLocal.get();
         try {
-            Class.forName(className);
-            conn = DriverManager.getConnection(url, user, pwd);
+            if (null == conn) {
+                Class.forName(className);
+                conn = DriverManager.getConnection(url, user, pwd);
+            }
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -59,14 +74,20 @@ public class DBUtil {
 
     // 查询
     public ResultSet query(String sql, List<Object> params) {
+        ResultSet rs = null;
         try {
-            ps = conn.prepareStatement(sql);
+            PreparedStatement ps = preparedStatementThreadLocal.get();
+            if (null == ps) {
+                ps = connectionThreadLocal.get().prepareStatement(sql);
+                preparedStatementThreadLocal.set(ps);
+            }
             if (params != null && params.size() > 0) {
                 for (int i = 0; i < params.size(); i++) {
                     ps.setObject(i + 1, params.get(i));
                 }
             }
             rs = ps.executeQuery();
+            resultSetThreadLocal.set(rs);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -76,13 +97,14 @@ public class DBUtil {
     // 增，删，改
     public void update(String sql, List<Object> params) {
         try {
-            ps = conn.prepareStatement(sql);
+            PreparedStatement ps = connectionThreadLocal.get().prepareStatement(sql);
             if (params != null && params.size() > 0) {
                 for (int i = 0; i < params.size(); i++) {
                     ps.setObject(i + 1, params.get(i));
                 }
             }
             ps.executeUpdate();
+            preparedStatementThreadLocal.set(ps);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -90,15 +112,12 @@ public class DBUtil {
 
     public void close() {
         try {
-            if (rs == null) {
-                rs.close();
-            }
-            if (ps == null) {
-                ps.close();
-            }
-            if (conn == null) {
-                conn.close();
-            }
+            if (resultSetThreadLocal.get() != null)
+                resultSetThreadLocal.get().close();
+            if (preparedStatementThreadLocal.get() != null)
+                preparedStatementThreadLocal.get().close();
+            if (null != connectionThreadLocal.get())
+                connectionThreadLocal.get().close();
         } catch (Exception e) {
             e.printStackTrace();
         }

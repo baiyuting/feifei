@@ -1,4 +1,4 @@
-package domain;
+package entity;
 
 /**
  * 用户表对应转化对象

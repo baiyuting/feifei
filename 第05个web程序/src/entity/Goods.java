@@ -1,4 +1,4 @@
-package domain;
+package entity;
 
 /**
  * 商品表 对应 类
