@@ -1,4 +1,4 @@
-package test;
+package util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -10,14 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * 本类是 测试生成验证码的类
- * <p>
- * 老肥先看哈
- */
-public class ImageCodeTest {
+public class ImageCodeUtil {
 
-    public static void main(String[] args) {
+    /**
+     * 验证码 生成方法
+     *
+     * @return map code 为 验证码值，imageCode 为生成的图片验证码 byte[]
+     */
+    public static Map<String, Object> getImageCode() {
         Map<String, Object> map = new HashMap<>();//存储结果值
         BufferedImage bufferedImage = new BufferedImage(200, 50, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics2D = bufferedImage.createGraphics();
@@ -54,22 +54,20 @@ public class ImageCodeTest {
         int lineTimes = 10;//文本框 斜着划 10 条斜线
         for (int i = 1; i <= lineTimes; i++)
             graphics2D.drawLine(i * bufferedImage.getWidth() / lineTimes, 0, (i - 1) * bufferedImage.getWidth() / lineTimes, bufferedImage.getHeight());
-        //关闭画笔
-        graphics2D.dispose();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-//            ImageIO.write(bufferedImage, "png", new File("D:\\tes.png"));
+            ImageIO.setCacheDirectory(new File("D:\\temp"));//设置temp 目录
             ImageIO.write(bufferedImage, "png", outputStream);
             map.put("imageCode", outputStream.toByteArray());
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 outputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return map;
     }
-
 }
