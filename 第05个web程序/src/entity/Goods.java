@@ -17,6 +17,30 @@ public class Goods {
     private String image;//商品图片
     private Integer status;//商品上架状态
 
+    public Goods() {
+    }
+
+    public Goods(Integer id, String name, Integer status) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+    }
+
+    public Goods(String name, String description, String image, Integer status) {
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.status = status;
+    }
+
+    public Goods(Integer id, String name, String description, String image, Integer status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.status = status;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -55,5 +79,16 @@ public class Goods {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Goods{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

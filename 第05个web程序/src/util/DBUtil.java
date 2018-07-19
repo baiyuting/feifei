@@ -146,12 +146,18 @@ public class DBUtil {
      */
     public void close() {
         try {
-            if (resultSetThreadLocal.get() != null)
+            if (resultSetThreadLocal.get() != null) {
                 resultSetThreadLocal.get().close();
-            if (preparedStatementThreadLocal.get() != null)
+                resultSetThreadLocal.remove();// 清楚掉当前线程中存的 resultSet 对象
+            }
+            if (preparedStatementThreadLocal.get() != null) {
                 preparedStatementThreadLocal.get().close();
-            if (null != connectionThreadLocal.get())
+                preparedStatementThreadLocal.remove();// 清楚掉当前线程中存的 preparedStatement 对象
+            }
+            if (null != connectionThreadLocal.get()) {
                 connectionThreadLocal.get().close();
+                connectionThreadLocal.remove();// 清楚掉当前线程中存的 connection 对象
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
