@@ -13,7 +13,7 @@ public class GoodsDAOTest {
 
     @Test
     public void insert() {
-        for (int i = 2; i <= 10; i++)
+        for (int i = 11; i <= 20; i++)
             dao.insert(new Goods("name" + i, "description" + i, "image" + i, 0));
     }
 

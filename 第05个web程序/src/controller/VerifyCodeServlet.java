@@ -4,7 +4,6 @@ import util.ImageCodeUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,12 +26,10 @@ import java.util.Map;
  * imageCode 是生成的图形验证码 byte[]
  */
 @WebServlet(name = "VerifyCodeServlet", urlPatterns = {"/verifyCode"})
-public class VerifyCodeServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.doGet(request, response);
-    }
+public class VerifyCodeServlet extends BaseServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> res = ImageCodeUtil.getImageCode();
         String image = Base64.getEncoder().encodeToString((byte[]) (res.get("imageCode")));
         image = "data:image/png;base64," + image;
