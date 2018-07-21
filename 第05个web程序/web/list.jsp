@@ -12,6 +12,7 @@
     <title>Title</title>
 </head>
 <body>
+<a href="add.jsp">添加商品</a><br>
 <c:forEach items="${page['list']}" var="item">
     ${item.id} -> ${item.name} -> ${item.status} <br>
 </c:forEach>
