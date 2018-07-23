@@ -9,6 +9,9 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="module" name="JUnit4" module-name="第05个web程序" />
+          <element id="library" level="project" name="commons-fileupload-1.3.11" />
+          <element id="library" level="project" name="mysql-connector-java-5.1.6-bin" />
+          <element id="library" level="project" name="jstl-1.2" />
         </element>
       </element>
     </root>

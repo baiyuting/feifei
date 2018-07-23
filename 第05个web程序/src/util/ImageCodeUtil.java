@@ -56,7 +56,7 @@ public class ImageCodeUtil {
             graphics2D.drawLine(i * bufferedImage.getWidth() / lineTimes, 0, (i - 1) * bufferedImage.getWidth() / lineTimes, bufferedImage.getHeight());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            ImageIO.setCacheDirectory(new File("D:\\temp"));//设置temp 目录
+//            ImageIO.setCacheDirectory(new File("D:\\temp"));//设置缓存目录
             ImageIO.write(bufferedImage, "png", outputStream);
             map.put("imageCode", outputStream.toByteArray());
         } catch (IOException e) {

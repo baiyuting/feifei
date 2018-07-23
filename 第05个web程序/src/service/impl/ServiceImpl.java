@@ -4,8 +4,14 @@ import dao.GoodsDAO;
 import dao.UserDAO;
 import entity.Goods;
 import entity.User;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import service.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -45,5 +51,32 @@ public class ServiceImpl implements Service {
         map.put("list", goodsDAO.getListByName((pageNo - 1) * pageSize, pageSize, name));//获取 商品列表信息
         map.put("count", goodsDAO.count(name));//统计总数
         return map;
+    }
+
+    @Override
+    public void addGoods(HttpServletRequest request) {
+        try {
+            Goods goods = new Goods();
+            List<FileItem> list = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);//解析 request
+            for (FileItem item : list) {
+                if (item.isFormField()) { // 如果不是文件，是属性值
+                    if ("name".equals(item.getFieldName()))
+                        goods.setName(item.getString("utf-8"));//设置名称
+                    else if ("description".equals(item.getFieldName()))
+                        goods.setDescription(item.getString("utf-8"));//设置商品描述
+                } else { //此时找到上传的文件
+                    String path = request.getServletContext().getRealPath("/") + "image";//将图片上传到 image 文件夹中
+                    File file = new File(path + "/" + item.getName());
+                    if (!file.getParentFile().exists())//如果父目录不存在，创建目录
+                        file.getParentFile().mkdirs();
+                    item.write(file);//文件写入
+                    goods.setImage("/image/" + file.getName());//设置存储图片路径
+                }
+            }
+            goods.setStatus(0);//商品没有上架
+            goodsDAO.insert(goods);//添加商品
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
