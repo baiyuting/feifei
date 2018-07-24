@@ -79,4 +79,10 @@ public class ServiceImpl implements Service {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void updateStatus(String idStr, String statusStr) {
+        if (null != idStr && null != statusStr && idStr.matches("\\d+") && statusStr.matches("\\d+"))//必须要为 数字
+            goodsDAO.updateStatusById(new Goods(Integer.parseInt(idStr), Integer.parseInt(statusStr)));//执行更新操作
+    }
 }

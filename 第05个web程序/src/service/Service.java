@@ -59,4 +59,16 @@ public interface Service {
      * @param request 请求
      */
     void addGoods(HttpServletRequest request);
+
+    /**
+     * 更新商品的上架状态
+     * <p>
+     * 在商品列表页，点击下拉菜单更改商品的上架状态
+     * <p>
+     * 注意 idStr 和 statusStr 有可能为 null 或者不是数字，需要排除这个情况
+     *
+     * @param idStr     商品id
+     * @param statusStr 商品状态
+     */
+    void updateStatus(String idStr, String statusStr);
 }

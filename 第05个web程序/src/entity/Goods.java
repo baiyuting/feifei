@@ -20,6 +20,11 @@ public class Goods {
     public Goods() {
     }
 
+    public Goods(Integer id, Integer status) {
+        this.id = id;
+        this.status = status;
+    }
+
     public Goods(Integer id, String name, Integer status) {
         this.id = id;
         this.name = name;
