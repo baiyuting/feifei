@@ -50,6 +50,7 @@ public class ServiceImpl implements Service {
         map.put("pageSize", pageSize);
         map.put("list", goodsDAO.getListByName((pageNo - 1) * pageSize, pageSize, name));//获取 商品列表信息
         map.put("count", goodsDAO.count(name));//统计总数
+        map.put("name", name);
         return map;
     }
 
@@ -84,5 +85,17 @@ public class ServiceImpl implements Service {
     public void updateStatus(String idStr, String statusStr) {
         if (null != idStr && null != statusStr && idStr.matches("\\d+") && statusStr.matches("\\d+"))//必须要为 数字
             goodsDAO.updateStatusById(new Goods(Integer.parseInt(idStr), Integer.parseInt(statusStr)));//执行更新操作
+    }
+
+    @Override
+    public Goods getGoodsById(String sid) {
+        if (null == sid || !sid.matches("\\d+"))//如果 传入参数为 null 或者 sid 不是数字，返回 null
+            return null;
+        try {
+            return goodsDAO.getById(Integer.parseInt(sid));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

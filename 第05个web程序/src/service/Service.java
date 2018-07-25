@@ -1,5 +1,6 @@
 package service;
 
+import entity.Goods;
 import entity.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,4 +72,16 @@ public interface Service {
      * @param statusStr 商品状态
      */
     void updateStatus(String idStr, String statusStr);
+
+    /**
+     * 查询商品详细信息
+     * <p>
+     * 具体有 商品 id，名称，描述，图片url，上架状态
+     * <p>
+     * 如果传入参数 sid 为 null 或者 sid 不是数字，返回 null
+     *
+     * @param sid 商品id
+     * @return 商品查询结果
+     */
+    Goods getGoodsById(String sid);
 }

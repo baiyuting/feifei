@@ -35,23 +35,31 @@
                 }
             }
         }
+
+        function search() {// 查询 逻辑处理
+            window.location = "/list?name=" + document.getElementById("search").value;
+        }
     </script>
 </head>
 <body>
 <a href="add.jsp">添加商品</a><br>
+<input type="text" id="search" name="search">
+<button id="searchBtn" name="searchBtn" onclick="search()">查询</button>
+<br>
 <c:forEach items="${page['list']}" var="item">
     ${item.id} -> ${item.name} ->
     <select onchange="changeStatus(${item.id},${item.status})" id="status_${item.id}_${item.status}" name="status">
         <option value="0">下架</option>
         <option value="1">上架</option>
     </select>
+    -> <a href="/detail?id=${item.id}">详情</a>
     <br>
 </c:forEach>
 <c:if test="${page['pageNo']-1>=1}">
-    <a href="/list?pageNo=${page['pageNo']-1}&pageSize=${page['pageSize']}">上一页</a>
+    <a href="/list?pageNo=${page['pageNo']-1}&pageSize=${page['pageSize']}&name=${page['name']}">上一页</a>
 </c:if>
 <c:if test="${page['pageNo']+1<=(page['count']-1)/page['pageSize']+1}">
-    <a href="/list?pageNo=${page['pageNo']+1}&pageSize=${page['pageSize']}">下一页</a>
+    <a href="/list?pageNo=${page['pageNo']+1}&pageSize=${page['pageSize']}&name=${page['name']}">下一页</a>
 </c:if>
 </body>
 </html>
